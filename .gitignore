@@ -26,3 +26,4 @@ temp/
 
 # TypeScript cache
 *.tsbuildinfo
+.vercel
