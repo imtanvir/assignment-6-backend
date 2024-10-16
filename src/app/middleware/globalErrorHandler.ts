@@ -1,28 +1,23 @@
-import { NextFunction, Request, Response } from "express";
-import httpStatus from "http-status";
-import jwt from "jsonwebtoken";
-import { ZodError } from "zod";
-import config from "../config";
-import handleCastError from "../errors/handleCastError";
-import handleDuplicateError from "../errors/handleDuplicateError";
-import handleValidationError from "../errors/handleValidationError";
-import handleZodError from "../errors/handleZodError";
-import { TErrorSource } from "../interface";
-import AppError from "./AppError";
+import { NextFunction, Request, Response } from 'express';
+import httpStatus from 'http-status';
+import jwt from 'jsonwebtoken';
+import { ZodError } from 'zod';
+import config from '../config';
+import handleCastError from '../errors/handleCastError';
+import handleDuplicateError from '../errors/handleDuplicateError';
+import handleValidationError from '../errors/handleValidationError';
+import handleZodError from '../errors/handleZodError';
+import { TErrorSource } from '../interface';
+import AppError from './AppError';
 
-const globalErrorHandler = (
-  err: any,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   let statusCode = 500;
-  let message = "Something Went Wrong!";
+  let message = 'Something Went Wrong!';
 
   let errorSource: TErrorSource = [
     {
-      path: "",
-      message: "Something went wrong!",
+      path: '',
+      message: 'Something went wrong!',
     },
   ];
 
@@ -32,13 +27,13 @@ const globalErrorHandler = (
     statusCode = errorFormat.statusCode;
     message = errorFormat.message;
     errorSource = errorFormat.errorSources;
-  } else if (err.name === "ValidationError") {
+  } else if (err.name === 'ValidationError') {
     // Mongoose ValidationError
     const errorFormat = handleValidationError(err);
     statusCode = errorFormat.statusCode;
     message = errorFormat.message;
     errorSource = errorFormat.errorSources;
-  } else if (err?.name === "CastError") {
+  } else if (err?.name === 'CastError') {
     // Mongoose CastError
     const errorFormat = handleCastError(err);
     statusCode = errorFormat.statusCode;
@@ -50,24 +45,24 @@ const globalErrorHandler = (
     statusCode = errorFormat.statusCode;
     message = errorFormat.message;
     errorSource = errorFormat.errorSources;
-  } else if (err.name === "TokenExpiredError") {
+  } else if (err.name === 'TokenExpiredError') {
     // JWT TokenExpiredError
     statusCode = httpStatus.UNAUTHORIZED;
-    message = "Unauthorized. Token has expired.";
+    message = 'Unauthorized. Token has expired.';
     errorSource = [
       {
-        path: "",
-        message: "Token has expired.",
+        path: '',
+        message: 'Token has expired.',
       },
     ];
   } else if (err instanceof jwt.JsonWebTokenError) {
     // JWT JsonWebTokenError
     statusCode = httpStatus.UNAUTHORIZED;
-    message = "Unauthorized. Token is invalid.";
+    message = 'Unauthorized. Token is invalid.';
     errorSource = [
       {
-        path: "",
-        message: "Token is invalid.",
+        path: '',
+        message: 'Token is invalid.',
       },
     ];
   } else if (err instanceof AppError) {
@@ -76,7 +71,7 @@ const globalErrorHandler = (
     message = err.message;
     errorSource = [
       {
-        path: "",
+        path: '',
         message: err.message,
       },
     ];
@@ -85,7 +80,7 @@ const globalErrorHandler = (
     message = err.message;
     errorSource = [
       {
-        path: "",
+        path: '',
         message: err?.message,
       },
     ];
@@ -95,7 +90,7 @@ const globalErrorHandler = (
     success: false,
     message: message,
     errorSource,
-    stack: config.node_env === "development" ? err?.stack : null,
+    stack: config.node_env === 'development' ? err?.stack : null,
   });
 };
 

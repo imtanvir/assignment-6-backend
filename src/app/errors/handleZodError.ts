@@ -1,5 +1,5 @@
-import { ZodError, ZodIssue } from "zod";
-import { TErrorSource } from "../interface";
+import { ZodError, ZodIssue } from 'zod';
+import { TErrorSource } from '../interface';
 
 const handleZodError = (err: ZodError) => {
   const errorSources: TErrorSource = err.issues.map((issue: ZodIssue) => {
@@ -11,7 +11,7 @@ const handleZodError = (err: ZodError) => {
   const statusCode = 400;
   return {
     statusCode,
-    message: "Validation Error!",
+    message: 'Validation Error!',
     errorSources,
   };
 };
