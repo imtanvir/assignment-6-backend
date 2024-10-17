@@ -11,6 +11,8 @@ export default tseslint.config(
       globals: {
         var1: 'writable',
         var2: 'readonly',
+        process: true,
+        console: true,
       },
     },
   },
