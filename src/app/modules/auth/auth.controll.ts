@@ -23,6 +23,7 @@ const signIn = catchAsync(async (req, res) => {
   const result = await authService.SignIn(email, password);
   const { jwtPayload, accessToken, refreshToken } = result;
 
+  // send cookies to client with refresh token
   res.cookie('refreshToken', refreshToken, {
     secure: config.node_env === 'production',
     httpOnly: true,
