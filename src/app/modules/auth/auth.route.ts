@@ -20,5 +20,6 @@ router.post(
   requestValidation(authValidation.signUpValidation),
   AuthController.SignUp,
 );
+router.post('/signin', requestValidation(authValidation.signInValidation), AuthController.signIn);
 
 export const AuthRoute = router;

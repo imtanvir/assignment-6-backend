@@ -33,6 +33,7 @@ const userSchema = new Schema<TUser, ExtendModel>(
     phone: {
       type: String,
       required: true,
+      unique: true,
     },
     address: {
       type: String,

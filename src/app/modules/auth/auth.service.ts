@@ -13,9 +13,6 @@ const SignUp = async (payload: TAuth, files: Express.Multer.File[]) => {
   try {
     session.startTransaction();
     const isUserExist = await UserModel.isUserExist(payload.email);
-    if (isUserExist) {
-      throw new AppError(httpStatus.CONFLICT, 'User already Exist!');
-    }
 
     if (files) {
       const images: TImage[] = [];
@@ -37,9 +34,13 @@ const SignUp = async (payload: TAuth, files: Express.Multer.File[]) => {
     await session.commitTransaction();
     await session.endSession();
     return result;
-  } catch (error) {
+  } catch (error: any) {
     await session.abortTransaction();
     await session.endSession();
+    if (error.code === 11000 && error.keyValue) {
+      const duplicateKeys = Object.keys(error?.keyValue).join(', ');
+      throw new AppError(httpStatus.CONFLICT, `User with this ${duplicateKeys} already exists`);
+    }
     throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, 'Something went wrong');
   }
 };
