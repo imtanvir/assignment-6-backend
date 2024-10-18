@@ -3,7 +3,63 @@ import { model, Schema } from 'mongoose';
 import config from '../../config';
 import { ExtendModel, TUser } from './user.interface';
 
-const userSchema = new Schema<TUser, ExtendModel>();
+const userSchema = new Schema<TUser, ExtendModel>(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: [
+        {
+          _id: false,
+          id: { type: String, required: true },
+          url: { type: String, required: true },
+          isRemove: { type: Boolean, default: false },
+        },
+      ],
+      default: [],
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      select: 0,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      enum: ['admin', 'user', 'superAdmin'],
+      default: 'user',
+    },
+    premium: {
+      type: Boolean,
+      default: false,
+    },
+    followers: {
+      type: Number,
+      default: 0,
+    },
+    following: {
+      type: Number,
+      default: 0,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
 
 // Hash the password to secure
 userSchema.pre('save', async function (next) {

@@ -1,6 +1,8 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
+import config from '../../config';
 import AppError from '../../middleware/AppError';
+import { createToken } from '../../utils/auth.utils';
 import { sendImageToCloudinary } from '../../utils/uploadImageInCloudinary';
 import { TImage } from '../user/user.interface';
 import { UserModel } from '../user/user.model';
@@ -41,6 +43,42 @@ const SignUp = async (payload: TAuth, files: Express.Multer.File[]) => {
     throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, 'Something went wrong');
   }
 };
+
+const SignIn = async (email: string, password: string) => {
+  const isUserExist = await UserModel.findOne({ email }).select('+password');
+  if (!isUserExist) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
+  }
+  const isPasswordMatched = await UserModel.isPasswordMatched(password, isUserExist.password);
+
+  if (!isPasswordMatched) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'Password is incorrect!');
+  }
+
+  const jwtPayload: TAuth = {
+    ...isUserExist.toObject(),
+    password: '',
+  };
+
+  const accessToken = createToken(
+    jwtPayload,
+    config.jwt_secret as string,
+    config.jwt_access_expires_in as string,
+  );
+
+  const refreshToken = createToken(
+    jwtPayload,
+    config.jwt_refresh_secret as string,
+    config.jwt_refresh_expires_in as string,
+  );
+
+  return {
+    jwtPayload,
+    accessToken,
+    refreshToken,
+  };
+};
 export const authService = {
   SignUp,
+  SignIn,
 };

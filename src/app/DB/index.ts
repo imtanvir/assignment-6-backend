@@ -14,8 +14,8 @@ const superUser = {
   following: 0,
   image: [
     {
-      id: null,
-      url: null,
+      id: '0',
+      url: 'not_added',
       isRemove: false,
     },
   ],
