@@ -9,6 +9,7 @@ import AppError from './AppError';
 
 const authCheck = (...requiredRole: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    console.log(requiredRole);
     const bearerToken = req.headers.authorization as string;
     // Exclude the Bearer from token
     const token = bearerToken?.split(' ')[1];
