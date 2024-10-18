@@ -2,12 +2,12 @@ import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 import jwt from 'jsonwebtoken';
 import { ZodError } from 'zod';
+import { TErrorSource } from '../../types';
 import config from '../config';
 import handleCastError from '../errors/handleCastError';
 import handleDuplicateError from '../errors/handleDuplicateError';
 import handleValidationError from '../errors/handleValidationError';
 import handleZodError from '../errors/handleZodError';
-import { TErrorSource } from '../interface';
 import AppError from './AppError';
 
 const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {

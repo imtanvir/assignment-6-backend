@@ -51,7 +51,7 @@ const authCheck = (...requiredRole: TUserRole[]) => {
       throw new AppError(httpStatus.UNAUTHORIZED, "User don't have access to this route!");
     }
 
-    req.user = decoded;
+    req.user = decoded as JwtPayload;
     next();
   });
 };

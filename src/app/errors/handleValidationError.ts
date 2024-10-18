@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { TErrorSource, TGenericErrorResponse } from '../interface';
+import { TErrorSource, TGenericErrorResponse } from '../../types';
 
 const handleValidationError = (err: mongoose.Error.ValidationError): TGenericErrorResponse => {
   const errorSources: TErrorSource = Object.values(err?.errors).map(

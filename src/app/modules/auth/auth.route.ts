@@ -1,5 +1,24 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
+import requestValidation from '../../middleware/requestValidation';
+import { upload } from '../../utils/uploadImageInCloudinary';
+import { AuthController } from './auth.controll';
+import { authValidation } from './auth.validation';
 
 const router = express.Router();
+
+router.post(
+  '/signup',
+  upload.array('file', 1),
+  (req: Request, res: Response, next: NextFunction) => {
+    try {
+      req.body = JSON.parse(req.body.data);
+      next();
+    } catch (error) {
+      res.status(500).json({ error: (error as Error).message });
+    }
+  },
+  requestValidation(authValidation.signUpValidation),
+  AuthController.SignUp,
+);
 
 export const AuthRoute = router;
