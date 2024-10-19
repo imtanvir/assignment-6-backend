@@ -1,4 +1,5 @@
 import { stripe } from '../../../app';
+import { UserModel } from '../user/user.model';
 import { TPayment } from './payment.interface';
 import { PaymentModel } from './payment.model';
 
@@ -26,4 +27,30 @@ const getPaymentHistory = async () => {
   const result = await PaymentModel.find({}).sort({ createdAt: -1 });
   return result;
 };
-export const PaymentService = { createPaymentHistory, advancePayment, getPaymentHistory };
+
+const deletePaymentHistory = async (_id: string) => {
+  const paymentHistory = await PaymentModel.findById({ _id });
+  if (!paymentHistory) {
+    throw new Error('Payment not found');
+  }
+  const result = await PaymentModel.findByIdAndDelete({ _id }, { new: true });
+  return result;
+};
+
+const getUserPaymentHistory = async (_id: string) => {
+  const isUserExist = await UserModel.findById({ _id });
+  if (!isUserExist) {
+    throw new Error('User not exist!');
+  }
+
+  const result = await PaymentModel.find({ userId: _id }).sort({ createdAt: -1 });
+  return result;
+};
+
+export const PaymentService = {
+  deletePaymentHistory,
+  createPaymentHistory,
+  advancePayment,
+  getPaymentHistory,
+  getUserPaymentHistory,
+};

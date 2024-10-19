@@ -37,8 +37,31 @@ const getPaymentHistory = catchAsync(async (req, res) => {
   });
 });
 
+const deletePaymentHistory = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await PaymentService.deletePaymentHistory(id);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Payment history deleted successfully!',
+    data: null,
+  });
+});
+
+const getUserPaymentHistory = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await PaymentService.getUserPaymentHistory(id);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'User payment history retrieved successfully!',
+    data: result,
+  });
+});
 export const PaymentController = {
   PaymentHistoryCreate,
   advancePayment,
   getPaymentHistory,
+  deletePaymentHistory,
+  getUserPaymentHistory,
 };
