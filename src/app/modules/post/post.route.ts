@@ -46,4 +46,17 @@ router.put(
   PostController.updatePost,
 );
 
+router.post('/comment-on-post/:id', authCheck(USER_ROLE.user), PostController.commentOnPost);
+router.put(
+  '/update-comment-on-post/:id',
+  authCheck(USER_ROLE.user),
+  PostController.updateCommentOnPost,
+);
+
+router.delete(
+  '/delete-comment-on-post/:id',
+  authCheck(USER_ROLE.user),
+  PostController.deleteCommentOnPost,
+);
+
 export const PostRoute = router;

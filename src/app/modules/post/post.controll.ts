@@ -50,9 +50,50 @@ const updatePost = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+const commentOnPost = catchAsync(async (req, res) => {
+  const payload = req.body;
+  const { comment, userId } = payload;
+  const { id: postId } = req.params;
+  const result = await PostService.commentOnPost(postId, userId, comment);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Comment attached successfully!',
+    data: result,
+  });
+});
+
+const updateCommentOnPost = catchAsync(async (req, res) => {
+  const payload = req.body;
+  const { comment, commentId } = payload;
+  const { id } = req.params;
+  const result = await PostService.updateCommentOnPost(id, commentId, comment);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Comment updated successfully!',
+    data: result,
+  });
+});
+
+const deleteCommentOnPost = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { commentId, userId } = req.body;
+  const result = await PostService.deleteCommentOnPost(id, commentId, userId);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Comment deleted successfully!',
+    data: result,
+  });
+});
 export const PostController = {
   createPost,
   getAllPost,
   updatePostVote,
   updatePost,
+  commentOnPost,
+  updateCommentOnPost,
+  deleteCommentOnPost,
 };

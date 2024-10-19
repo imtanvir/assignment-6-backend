@@ -119,10 +119,10 @@ const updatePostVote = async (postId: string, userId: string, action: 'upvote' |
       downvote: updateData.downvote,
       votes: updateData.votes,
     },
-    { new: true }, // Return the updated document
+    { new: true },
   );
 
-  return result; // Return the updated post
+  return result;
 };
 
 const updatePost = async (_id: string, payload: Partial<TPost>, files: any[]) => {
@@ -177,9 +177,86 @@ const updatePost = async (_id: string, payload: Partial<TPost>, files: any[]) =>
     throw new Error(error);
   }
 };
+
+const commentOnPost = async (_id: string, userId: string, comment: string) => {
+  // Check if the provided _id and userId are valid ObjectIds
+  console.log(_id, { userId }, Types.ObjectId.isValid(_id), Types.ObjectId.isValid(userId));
+  if (!Types.ObjectId.isValid(_id)) {
+    throw new Error('Invalid Post ID');
+  }
+
+  if (!Types.ObjectId.isValid(userId)) {
+    throw new Error('Invalid User ID');
+  }
+
+  const postObjectId = new Types.ObjectId(_id);
+  const userObjectId = new Types.ObjectId(userId);
+
+  // Check if the post exists
+  const isPostExist = await PostModel.findById(postObjectId);
+  if (!isPostExist) {
+    throw new Error('Post does not exist!');
+  }
+
+  // Update the post by pushing the new comment
+  const result = await PostModel.findByIdAndUpdate(
+    postObjectId,
+    {
+      $push: {
+        comments: {
+          author: userObjectId,
+          comment,
+          postId: postObjectId,
+        },
+      },
+    },
+    { new: true },
+  );
+
+  return result;
+};
+
+const updateCommentOnPost = async (_id: string, commentId: string, updatedComment: string) => {
+  const isPostExist = await PostModel.findById({ _id });
+  if (!isPostExist) {
+    throw new Error('Post not found');
+  }
+
+  const result = await PostModel.findOneAndUpdate(
+    { _id: new Types.ObjectId(_id), 'comments._id': new Types.ObjectId(commentId) },
+    { $set: { 'comments.$.comment': updatedComment } },
+    { new: true },
+  );
+
+  return result;
+};
+
+const deleteCommentOnPost = async (_id: string, commentId: string, userId: string) => {
+  const isPostExist = await PostModel.findById({ _id });
+  if (!isPostExist) {
+    throw new Error('Post not found');
+  }
+  const updatedPost = await PostModel.findOneAndUpdate(
+    { _id: new Types.ObjectId(_id) },
+    {
+      $pull: {
+        comments: {
+          _id: new Types.ObjectId(commentId),
+          author: new Types.ObjectId(userId),
+        },
+      },
+    },
+    { new: true },
+  );
+
+  return updatedPost;
+};
 export const PostService = {
   createPost,
   getAllPost,
   updatePostVote,
   updatePost,
+  commentOnPost,
+  updateCommentOnPost,
+  deleteCommentOnPost,
 };
