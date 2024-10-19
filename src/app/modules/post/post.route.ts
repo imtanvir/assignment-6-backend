@@ -12,4 +12,11 @@ router.post(
   requestValidation(postValidation.postCheck),
   PostController.createPost,
 );
+
+router.get(
+  '/all-post',
+  authCheck(USER_ROLE.user, USER_ROLE.admin, USER_ROLE.superAdmin),
+  PostController.getAllPost,
+);
+
 export const PostRoute = router;

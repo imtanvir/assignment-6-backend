@@ -7,15 +7,14 @@ const createPost = async (payload: TPost) => {
 };
 
 const getAllPost = async () => {
-  const post = await PostModel.find({})
-    .populate('user')
+  const posts = await PostModel.find({})
+    .populate({ path: 'user', select: '_id name image email' })
     .populate({
-      path: 'comment',
-      populate: {
-        path: 'author',
-      },
+      path: 'comments.author',
+      select: '_id name image',
     });
-  return post;
+
+  return posts;
 };
 export const PostService = {
   createPost,
