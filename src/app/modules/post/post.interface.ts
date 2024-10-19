@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import { TImage } from '../user/user.interface';
 export type TCategory = 'Tip' | 'Story';
 export type TComment = {
   author: Types.ObjectId;
@@ -14,6 +15,7 @@ export type TPost = {
   id: Types.ObjectId;
   title: String;
   content: String;
+  image: TImage[];
   votes: TVotes[] | [];
   premium: boolean;
   category: TCategory;

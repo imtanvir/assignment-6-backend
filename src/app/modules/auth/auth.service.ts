@@ -14,6 +14,10 @@ const SignUp = async (payload: TAuth, files: Express.Multer.File[]) => {
     session.startTransaction();
     const isUserExist = await UserModel.isUserExist(payload.email);
 
+    if (isUserExist) {
+      throw new AppError(httpStatus.CONFLICT, 'User already exist!');
+    }
+
     if (files) {
       const images: TImage[] = [];
       for (const file of files) {

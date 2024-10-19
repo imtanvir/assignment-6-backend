@@ -4,7 +4,10 @@ import { PostService } from './post.service';
 
 const createPost = catchAsync(async (req, res) => {
   const payload = req.body;
-  const result = await PostService.createPost(payload);
+  if (req.files && req.files?.length === 0) {
+    throw new Error('Post image not provided!');
+  }
+  const result = await PostService.createPost(payload, req.files as Express.Multer.File[]);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -34,8 +37,22 @@ const updatePostVote = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+const updatePost = catchAsync(async (req, res) => {
+  const payload = req.body;
+  const { id } = req.params;
+  const imageFiles = Array.isArray(req?.files) && req.files !== undefined ? req.files : [];
+  const result = await PostService.updatePost(id, payload, imageFiles);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Post updated successfully!',
+    data: result,
+  });
+});
 export const PostController = {
   createPost,
   getAllPost,
   updatePostVote,
+  updatePost,
 };

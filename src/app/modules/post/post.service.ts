@@ -1,10 +1,43 @@
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
+import {
+  deleteImageFromCloudinary,
+  sendImageToCloudinary,
+} from '../../utils/uploadImageInCloudinary';
+import { TImage } from '../user/user.interface';
 import { TPost, TVotes } from './post.interface';
 import { PostModel } from './post.model';
 
-const createPost = async (payload: TPost) => {
-  const post = await PostModel.create(payload);
-  return post;
+const createPost = async (payload: TPost, files: Express.Multer.File[]) => {
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+
+    if (files) {
+      const images: TImage[] = [];
+      for (const file of files) {
+        const imageName = `${Math.floor(Math.random() * 9000) + 100000}`;
+
+        // send image to Cloudinary using buffer
+        const { secure_url } = await sendImageToCloudinary(imageName, file.buffer);
+        images.push({
+          id: imageName,
+          url: secure_url as string,
+          isRemove: false,
+        });
+      }
+      payload.image = images;
+    }
+
+    const post = await PostModel.create(payload);
+
+    await session.commitTransaction();
+    await session.endSession();
+    return post;
+  } catch (error: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(error);
+  }
 };
 
 const getAllPost = async () => {
@@ -80,8 +113,62 @@ const updatePostVote = async (postId: string, userId: string, action: 'upvote' |
 
   return result; // Return the updated post
 };
+
+const updatePost = async (_id: string, payload: Partial<TPost>, files: any[]) => {
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    const images: TImage[] = [];
+    const isPostExist = await PostModel.findById({ _id });
+    if (!isPostExist) {
+      throw new Error('Post not found');
+    }
+
+    if (
+      isPostExist?.image &&
+      payload?.image &&
+      payload.image !== undefined &&
+      isPostExist?.image?.[0].isRemove !== payload?.image?.[0].isRemove
+    ) {
+      for (const img of payload.image) {
+        await deleteImageFromCloudinary(img.id);
+      }
+    }
+
+    if (files.length > 0) {
+      for (const file of files) {
+        const imageName = `${Math.floor(Math.random() * 9000) + 100000}`;
+
+        // send image to Cloudinary using buffer
+        const { secure_url } = await sendImageToCloudinary(imageName, file.buffer);
+        images.push({
+          id: imageName,
+          url: secure_url as string,
+          isRemove: false,
+        });
+      }
+
+      payload.image = [...images];
+    }
+
+    const result = await PostModel.findByIdAndUpdate({ _id }, payload, {
+      new: true,
+      runValidators: true,
+      session,
+    });
+
+    await session.commitTransaction();
+    await session.endSession();
+    return result;
+  } catch (error: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(error);
+  }
+};
 export const PostService = {
   createPost,
   getAllPost,
   updatePostVote,
+  updatePost,
 };

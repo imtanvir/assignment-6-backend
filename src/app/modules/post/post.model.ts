@@ -16,6 +16,17 @@ const postSchema = new Schema<TPost>(
       type: Boolean,
       default: false,
     },
+    image: {
+      type: [
+        {
+          _id: false,
+          id: { type: String, required: true },
+          url: { type: String, required: true },
+          isRemove: { type: Boolean, default: false },
+        },
+      ],
+      default: [],
+    },
     category: {
       type: String,
       enum: ['Tip', 'Story'],
