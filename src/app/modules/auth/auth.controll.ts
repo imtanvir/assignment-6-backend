@@ -11,7 +11,7 @@ const SignUp = catchAsync(async (req, res) => {
   const result = await authService.SignUp(payload, req.files as Express.Multer.File[]);
   const authUserResponse = { ...result.toObject(), password: undefined };
   sendResponse(res, {
-    statusCode: 201,
+    statusCode: 200,
     success: true,
     message: 'User registered successfully!',
     data: authUserResponse,

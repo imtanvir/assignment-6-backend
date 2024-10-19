@@ -8,6 +8,8 @@ export type TComment = {
 export type TPost = {
   user: Types.ObjectId;
   id: Types.ObjectId;
+  title: String;
+  content: String;
   premium: boolean;
   category: TCategory;
   comment: TComment[] | null;

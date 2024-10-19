@@ -29,6 +29,14 @@ const postSchema = new Schema<TPost>(
       type: Number,
       default: 0,
     },
+    title: {
+      type: String,
+      required: true,
+    },
+    content: {
+      type: String,
+      required: true,
+    },
     comment: {
       type: [
         {
