@@ -70,33 +70,44 @@ const updatePostVote = async (postId: string, userId: string, action: 'upvote' |
     (vote: TVotes) => vote.userId.toString() === userId.toString(),
   );
 
-  if (action === 'upvote') {
-    if (existingVote) {
-      if (existingVote.voteType === 'downvote') {
-        // User is switching from downvote to upvote
-        updateData.upvote += 1; // Increase upvotes
-        updateData.downvote -= 1; // Decrease downvotes
-        existingVote.voteType = 'upvote'; // Change vote type
-      }
-      // If the user is already upvoting, do nothing
-    } else {
-      // If the user has not voted yet, add a new upvote
-      updateData.upvote += 1;
-      updateData.votes.push({ userId: new Types.ObjectId(userId), voteType: 'upvote' });
+  if (existingVote && existingVote?.voteType === action) {
+    updateData.votes = updateData.votes.filter(
+      (vote: TVotes) => vote.userId.toString() !== userId.toString(),
+    );
+    if (action === 'upvote') {
+      updateData.upvote = updateData.upvote - 1;
+    } else if (action === 'downvote') {
+      updateData.downvote = updateData.downvote - 1;
     }
-  } else if (action === 'downvote') {
-    if (existingVote) {
-      if (existingVote.voteType === 'upvote') {
-        // User is switching from upvote to downvote
-        updateData.downvote += 1; // Increase downvotes
-        updateData.upvote -= 1; // Decrease upvotes
-        existingVote.voteType = 'downvote'; // Change vote type
+  } else {
+    if (action === 'upvote') {
+      if (existingVote) {
+        if (existingVote.voteType === 'downvote') {
+          // User is switching from downvote to upvote
+          updateData.upvote += 1; // Increase upvotes
+          updateData.downvote -= 1; // Decrease downvotes
+          existingVote.voteType = 'upvote'; // Change vote type
+        }
+        // If the user is already upvoting, do nothing
+      } else {
+        // If the user has not voted yet, add a new upvote
+        updateData.upvote += 1;
+        updateData.votes.push({ userId: new Types.ObjectId(userId), voteType: 'upvote' });
       }
-      // If the user is already downvoting, do nothing
-    } else {
-      // If the user has not voted yet, add a new downvote
-      updateData.downvote += 1;
-      updateData.votes.push({ userId: new Types.ObjectId(userId), voteType: 'downvote' });
+    } else if (action === 'downvote') {
+      if (existingVote) {
+        if (existingVote.voteType === 'upvote') {
+          // User is switching from upvote to downvote
+          updateData.downvote += 1; // Increase downvotes
+          updateData.upvote -= 1; // Decrease upvotes
+          existingVote.voteType = 'downvote'; // Change vote type
+        }
+        // If the user is already downvoting, do nothing
+      } else {
+        // If the user has not voted yet, add a new downvote
+        updateData.downvote += 1;
+        updateData.votes.push({ userId: new Types.ObjectId(userId), voteType: 'downvote' });
+      }
     }
   }
 
