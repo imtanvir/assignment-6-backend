@@ -16,6 +16,10 @@ const postSchema = new Schema<TPost>(
       type: Boolean,
       default: false,
     },
+    published: {
+      type: Boolean,
+      default: true,
+    },
     image: {
       type: [
         {

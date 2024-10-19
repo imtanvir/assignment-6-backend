@@ -22,4 +22,8 @@ const advancePayment = async (amount: number) => {
   return result;
 };
 
-export const PaymentService = { createPaymentHistory, advancePayment };
+const getPaymentHistory = async () => {
+  const result = await PaymentModel.find({}).sort({ createdAt: -1 });
+  return result;
+};
+export const PaymentService = { createPaymentHistory, advancePayment, getPaymentHistory };

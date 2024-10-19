@@ -15,6 +15,7 @@ export type TPost = {
   id: Types.ObjectId;
   title: String;
   content: String;
+  published: Boolean;
   image: TImage[];
   votes: TVotes[] | [];
   premium: boolean;

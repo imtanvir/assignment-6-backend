@@ -5,12 +5,13 @@ import { PaymentController } from './payment.controll';
 
 const router = express.Router();
 
-router.get(
+router.post(
   '/create-payment-history',
   authCheck(USER_ROLE.user),
   PaymentController.PaymentHistoryCreate,
 );
 
 router.post('/advance-payment', authCheck(USER_ROLE.user), PaymentController.advancePayment);
+router.get('/all-payment-history', authCheck(USER_ROLE.user), PaymentController.getPaymentHistory);
 
 export const PaymentHistoryRoute = router;
