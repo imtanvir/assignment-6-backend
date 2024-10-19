@@ -12,7 +12,6 @@ export type TUser = {
   email: string;
   password: string;
   role: TRole;
-  premium: boolean;
   phone: string;
   address: string;
   followers: number;

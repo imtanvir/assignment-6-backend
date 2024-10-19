@@ -13,9 +13,11 @@ const userProfileValidation = z.object({
 
 const userRoleUpdateSchema = z.object({
   body: z.object({
-    role: z.enum(['admin', 'user'], {
-      message: "Role must be either 'admin' or 'user'",
-    }),
+    name: z.string().min(1, 'Name is required').optional(),
+    email: z.string().email('Invalid email address').optional(),
+    phone: z.string().optional(),
+    address: z.string().optional(),
+    role: roleEnum.optional(),
   }),
 });
 

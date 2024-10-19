@@ -7,7 +7,6 @@ const superUser = {
   email: 'tanvirparvej101@gmail.com',
   password: config.super_admin_password,
   role: USER_ROLE.superAdmin,
-  premium: true,
   phone: '01700000000',
   address: 'Dhaka',
   followers: 0,

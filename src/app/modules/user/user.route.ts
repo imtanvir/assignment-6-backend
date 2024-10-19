@@ -26,6 +26,7 @@ router.put(
 );
 
 router.get('/all', authCheck(USER_ROLE.superAdmin, USER_ROLE.admin), UserController.getAllUser);
+
 router.put(
   '/update-user/:id',
   authCheck(USER_ROLE.superAdmin, USER_ROLE.admin),
@@ -38,6 +39,7 @@ router.put(
       res.status(500).json({ error: (error as Error).message });
     }
   },
+  requestValidation(userValidation.userProfileValidation),
   UserController.updateUserByAdmin,
 );
 

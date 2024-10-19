@@ -44,10 +44,6 @@ const userSchema = new Schema<TUser, ExtendModel>(
       enum: ['admin', 'user', 'superAdmin'],
       default: 'user',
     },
-    premium: {
-      type: Boolean,
-      default: false,
-    },
     followers: {
       type: Number,
       default: 0,
