@@ -23,7 +23,19 @@ const getAllPost = catchAsync(async (req, res) => {
   });
 });
 
+const updatePostVote = catchAsync(async (req, res) => {
+  const payload = req.body;
+  const { postId, userId, action } = payload;
+  const result = await PostService.updatePostVote(postId, userId, action);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Post updated successfully!',
+    data: result,
+  });
+});
 export const PostController = {
   createPost,
   getAllPost,
+  updatePostVote,
 };

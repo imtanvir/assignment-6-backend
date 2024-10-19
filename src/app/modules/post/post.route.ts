@@ -19,4 +19,6 @@ router.get(
   PostController.getAllPost,
 );
 
+router.put('/update-post/vote', authCheck(USER_ROLE.user), PostController.updatePostVote);
+
 export const PostRoute = router;

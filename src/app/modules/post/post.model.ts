@@ -37,6 +37,23 @@ const postSchema = new Schema<TPost>(
       type: String,
       required: true,
     },
+    votes: {
+      type: [
+        {
+          userId: {
+            type: Schema.Types.ObjectId,
+            ref: 'user',
+            required: true,
+          },
+          voteType: {
+            type: String,
+            enum: ['upvote', 'downvote'],
+            required: true,
+          },
+        },
+      ],
+      default: [],
+    },
     comments: {
       type: [
         {
