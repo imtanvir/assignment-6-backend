@@ -11,4 +11,6 @@ export type TPost = {
   premium: boolean;
   category: TCategory;
   comment: TComment[] | null;
+  upvote: number;
+  downvote: number;
 };
