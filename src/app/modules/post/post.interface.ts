@@ -12,7 +12,7 @@ export type TPost = {
   content: String;
   premium: boolean;
   category: TCategory;
-  comment: TComment[] | null;
+  comments: TComment[] | [];
   upvote: number;
   downvote: number;
 };

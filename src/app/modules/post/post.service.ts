@@ -6,6 +6,18 @@ const createPost = async (payload: TPost) => {
   return post;
 };
 
+const getAllPost = async () => {
+  const post = await PostModel.find({})
+    .populate('user')
+    .populate({
+      path: 'comment',
+      populate: {
+        path: 'author',
+      },
+    });
+  return post;
+};
 export const PostService = {
   createPost,
+  getAllPost,
 };

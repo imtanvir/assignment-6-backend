@@ -37,10 +37,9 @@ const postSchema = new Schema<TPost>(
       type: String,
       required: true,
     },
-    comment: {
+    comments: {
       type: [
         {
-          _id: false,
           author: {
             type: Schema.Types.ObjectId,
             ref: 'user',
@@ -50,15 +49,10 @@ const postSchema = new Schema<TPost>(
             type: String,
             required: true,
           },
-          postId: {
-            type: Schema.Types.ObjectId,
-            ref: 'post',
-            required: true,
-          },
         },
       ],
       ref: 'comment',
-      default: null,
+      default: [],
     },
   },
   {

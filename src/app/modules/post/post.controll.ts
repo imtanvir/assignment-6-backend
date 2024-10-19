@@ -4,7 +4,6 @@ import { PostService } from './post.service';
 
 const createPost = catchAsync(async (req, res) => {
   const payload = req.body;
-  console.log({ payload });
   const result = await PostService.createPost(payload);
   sendResponse(res, {
     statusCode: 200,
@@ -14,6 +13,17 @@ const createPost = catchAsync(async (req, res) => {
   });
 });
 
+const getAllPost = catchAsync(async (req, res) => {
+  const result = await PostService.getAllPost();
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'All post retrieved successfully!',
+    data: result,
+  });
+});
+
 export const PostController = {
   createPost,
+  getAllPost,
 };
