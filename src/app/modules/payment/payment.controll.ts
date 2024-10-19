@@ -15,6 +15,19 @@ const PaymentHistoryCreate = catchAsync(async (req, res) => {
   });
 });
 
+const advancePayment = catchAsync(async (req, res) => {
+  const { amount } = req.body;
+  const result = await PaymentService.advancePayment(amount);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: 'Advance payment successfully',
+    data: result,
+  });
+});
+
 export const PaymentController = {
   PaymentHistoryCreate,
+  advancePayment,
 };

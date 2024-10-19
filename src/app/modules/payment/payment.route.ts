@@ -11,4 +11,6 @@ router.get(
   PaymentController.PaymentHistoryCreate,
 );
 
+router.post('/advance-payment', authCheck(USER_ROLE.user), PaymentController.advancePayment);
+
 export const PaymentHistoryRoute = router;
