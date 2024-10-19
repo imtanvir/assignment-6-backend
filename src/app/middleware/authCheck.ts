@@ -9,7 +9,6 @@ import AppError from './AppError';
 
 const authCheck = (...requiredRole: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    console.log(requiredRole);
     const bearerToken = req.headers.authorization as string;
     // Exclude the Bearer from token
     const token = bearerToken?.split(' ')[1];
@@ -34,7 +33,7 @@ const authCheck = (...requiredRole: TUserRole[]) => {
 
     const isUserExist = await UserModel.isUserExist(decoded?.email);
     if (!isUserExist) {
-      throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
+      throw new AppError(httpStatus.NOT_FOUND, 'This user is not found!');
     }
 
     const currentTime = Math.floor(Date.now() / 1000);
@@ -49,7 +48,7 @@ const authCheck = (...requiredRole: TUserRole[]) => {
     }
 
     if (requiredRole && !requiredRole.includes(decoded.role)) {
-      throw new AppError(httpStatus.UNAUTHORIZED, "User don't have access to this route!");
+      throw new AppError(httpStatus.UNAUTHORIZED, 'User not authorized!');
     }
 
     req.user = decoded as JwtPayload;

@@ -64,6 +64,7 @@ const userSchema = new Schema<TUser, ExtendModel>(
 
 // Hash the password to secure
 userSchema.pre('save', async function (next) {
+  console.log(await bcrypt.hash(this.password, Number(config.dcrypt_salt_round)));
   this.password = await bcrypt.hash(this.password, Number(config.dcrypt_salt_round));
   next();
 });
