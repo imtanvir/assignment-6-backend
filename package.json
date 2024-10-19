@@ -7,7 +7,7 @@
     "build": "tsc",
     "start": "node ./dist/server.js",
     "format": "prettier --write .",
-    "start:dev": "ts-node-dev --respawn src/server.ts --turbo",
+    "start:dev": "ts-node-dev --respawn src/server.ts",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint src --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
