@@ -45,12 +45,14 @@ const userSchema = new Schema<TUser, ExtendModel>(
       default: 'user',
     },
     followers: {
-      type: Number,
-      default: 0,
+      type: [Schema.Types.ObjectId],
+      ref: 'user',
+      default: [],
     },
     following: {
-      type: Number,
-      default: 0,
+      type: [Schema.Types.ObjectId],
+      ref: 'user',
+      default: [],
     },
   },
   {

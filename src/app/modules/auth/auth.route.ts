@@ -11,7 +11,9 @@ router.post(
   upload.array('file', 1),
   (req: Request, res: Response, next: NextFunction) => {
     try {
+      console.log(req.body.data);
       req.body = JSON.parse(req.body.data);
+      console.log(req.body);
       next();
     } catch (error) {
       res.status(500).json({ error: (error as Error).message });

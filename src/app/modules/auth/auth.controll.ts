@@ -33,8 +33,11 @@ const signIn = catchAsync(async (req, res) => {
     statusCode: 200,
     success: true,
     message: 'User logged in successfully!',
-    token: accessToken,
-    data: jwtPayload,
+    data: {
+      jwtPayload,
+      accessToken,
+      refreshToken,
+    },
   });
 });
 export const AuthController = {

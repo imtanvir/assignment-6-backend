@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { USER_ROLE } from './user.constant';
 
 export type TRole = 'user' | 'admin' | 'superAdmin';
@@ -14,8 +14,8 @@ export type TUser = {
   role: TRole;
   phone: string;
   address: string;
-  followers: number;
-  following: number;
+  followers: Types.ObjectId[];
+  following: Types.ObjectId[];
   image: TImage[];
 };
 

@@ -16,6 +16,7 @@ const userProfile = catchAsync(async (req, res) => {
 const userUpdate = catchAsync(async (req, res) => {
   const { id } = req.params;
   const payLoad = req.body;
+  console.log({ payLoad, id });
   const imageFiles = Array.isArray(req?.files) && req.files !== undefined ? req.files : [];
   const result = await UserService.userUpdate(id, payLoad, imageFiles);
 
@@ -50,9 +51,21 @@ const updateUserByAdmin = catchAsync(async (req, res) => {
   });
 });
 
+const followUser = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { actionUserId } = req.body;
+  const result = await UserService.followUser(id, actionUserId);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'User followed successfully!',
+    data: result,
+  });
+});
 export const UserController = {
   userProfile,
   userUpdate,
   getAllUser,
   updateUserByAdmin,
+  followUser,
 };

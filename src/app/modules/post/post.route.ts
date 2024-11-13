@@ -13,7 +13,9 @@ router.post(
   upload.array('file', 1),
   (req: Request, res: Response, next: NextFunction) => {
     try {
+      console.log('here:', req.body);
       req.body = JSON.parse(req.body.data);
+      console.log(req.body);
       next();
     } catch (error) {
       res.status(500).json({ error: (error as Error).message });
@@ -25,12 +27,18 @@ router.post(
 
 router.get(
   '/all-post',
-  authCheck(USER_ROLE.user, USER_ROLE.admin, USER_ROLE.superAdmin),
+  // authCheck(USER_ROLE.user, USER_ROLE.admin, USER_ROLE.superAdmin),
   PostController.getAllPost,
 );
 
-router.put('/update-post/vote', authCheck(USER_ROLE.user), PostController.updatePostVote);
+router.get('/single-post/:id', PostController.getSinglePost);
 
+router.put('/update-post/vote', authCheck(USER_ROLE.user), PostController.updatePostVote);
+router.delete(
+  '/delete-post/:id',
+  authCheck(USER_ROLE.user, USER_ROLE.admin),
+  PostController.deletePost,
+);
 router.put(
   '/update-post/:id',
   authCheck(USER_ROLE.user, USER_ROLE.admin, USER_ROLE.superAdmin),
@@ -46,6 +54,11 @@ router.put(
   PostController.updatePost,
 );
 
+router.get(
+  '/user-posts/:id',
+  authCheck(USER_ROLE.user, USER_ROLE.admin),
+  PostController.getUserPosts,
+);
 router.post('/comment-on-post/:id', authCheck(USER_ROLE.user), PostController.commentOnPost);
 router.put(
   '/update-comment-on-post/:id',

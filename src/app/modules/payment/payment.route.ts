@@ -11,7 +11,11 @@ router.post(
   PaymentController.PaymentHistoryCreate,
 );
 
-router.post('/advance-payment', authCheck(USER_ROLE.user), PaymentController.advancePayment);
+router.post(
+  '/create-client-secret',
+  // authCheck(USER_ROLE.user),
+  PaymentController.makePayment,
+);
 router.get(
   '/all-payment-history',
   authCheck(USER_ROLE.admin, USER_ROLE.superAdmin),

@@ -29,7 +29,6 @@ const createPost = async (payload: TPost, files: Express.Multer.File[]) => {
     }
 
     const post = await PostModel.create(payload);
-
     await session.commitTransaction();
     await session.endSession();
     return post;
@@ -40,13 +39,18 @@ const createPost = async (payload: TPost, files: Express.Multer.File[]) => {
   }
 };
 
-const getAllPost = async () => {
-  const posts = await PostModel.find({})
+const getAllPost = async (limit: number, skip: number, searchQuery: string) => {
+  const query = searchQuery ? { post: { $regex: new RegExp(searchQuery, 'i') } } : {};
+
+  const posts = await PostModel.find(query)
     .populate({ path: 'user', select: '_id name image email' })
     .populate({
       path: 'comments.author',
-      select: '_id name image',
-    });
+      select: '_id name image followers following',
+    })
+    .limit(limit)
+    .skip(skip)
+    .sort({ createdAt: -1 });
 
   return posts;
 };
@@ -212,8 +216,15 @@ const commentOnPost = async (_id: string, userId: string, comment: string) => {
     },
     { new: true },
   );
+  const allComments = await PostModel.findById(postObjectId).populate({
+    path: 'comments.author',
+    select: '_id name image',
+  });
 
-  return result;
+  return {
+    result,
+    allComments,
+  };
 };
 
 const updateCommentOnPost = async (_id: string, commentId: string, updatedComment: string) => {
@@ -251,6 +262,41 @@ const deleteCommentOnPost = async (_id: string, commentId: string, userId: strin
 
   return updatedPost;
 };
+
+const getUserPosts = async (userId: string) => {
+  const result = await PostModel.find({ user: new Types.ObjectId(userId) })
+    .populate({ path: 'user', select: '_id name image email' })
+    .populate({
+      path: 'comments.author',
+      select: '_id name image',
+    })
+    .sort({ createdAt: -1 });
+  return result;
+};
+
+const deletePost = async (_id: string) => {
+  const isPostExist = await PostModel.findById({ _id });
+  if (!isPostExist) {
+    throw new Error('Post not found');
+  }
+  const result = await PostModel.findByIdAndDelete({ _id }, { new: true });
+  return null;
+};
+
+const getSinglePost = async (_id: string) => {
+  const result = await PostModel.findById({ _id })
+    .populate({ path: 'user', select: '_id name image email' })
+    .populate({
+      path: 'comments.author',
+      select: '_id name image',
+    })
+    .sort({ createdAt: -1 });
+
+  if (!result) {
+    throw new Error('Post not found');
+  }
+  return result;
+};
 export const PostService = {
   createPost,
   getAllPost,
@@ -259,4 +305,7 @@ export const PostService = {
   commentOnPost,
   updateCommentOnPost,
   deleteCommentOnPost,
+  getUserPosts,
+  deletePost,
+  getSinglePost,
 };

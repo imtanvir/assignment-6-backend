@@ -7,7 +7,7 @@ import { UserController } from './user.controll';
 import { userValidation } from './user.validation';
 const router = express.Router();
 
-router.get('/', authCheck(USER_ROLE.user), UserController.userProfile);
+router.get('/', authCheck(USER_ROLE.user, USER_ROLE.admin), UserController.userProfile);
 
 router.put(
   '/update/:id',
@@ -15,18 +15,19 @@ router.put(
   upload.array('file', 1),
   (req: Request, res: Response, next: NextFunction) => {
     try {
+      console.log('hit', req.body);
       req.body = JSON.parse(req.body.data);
       next();
     } catch (error) {
       res.status(500).json({ error: (error as Error).message });
     }
   },
-  requestValidation(userValidation.userProfileValidation),
+  requestValidation(userValidation.profileUpdateValidation),
   UserController.userUpdate,
 );
 
 router.get('/all', authCheck(USER_ROLE.superAdmin, USER_ROLE.admin), UserController.getAllUser);
-
+router.put('/follow-user/:id', authCheck(USER_ROLE.user), UserController.followUser);
 router.put(
   '/update-user/:id',
   authCheck(USER_ROLE.superAdmin, USER_ROLE.admin),

@@ -10,6 +10,7 @@ import AppError from './AppError';
 const authCheck = (...requiredRole: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const bearerToken = req.headers.authorization as string;
+    console.log({ bearerToken }, { body: req.body });
     // Exclude the Bearer from token
     const token = bearerToken?.split(' ')[1];
     if (token === '' || !token) {
@@ -17,11 +18,12 @@ const authCheck = (...requiredRole: TUserRole[]) => {
     }
 
     // check if token hacked or invalid by refresh token
-    const refreshToken = req.cookies;
-    const refreshTokenDecoded = jwt.verify(
-      refreshToken.refreshToken,
-      config.jwt_refresh_secret as string,
-    ) as JwtPayload;
+    // const refreshToken = req.cookies;
+    // console.log({ refreshToken });
+    // const refreshTokenDecoded = jwt.verify(
+    //   refreshToken.refreshToken,
+    //   config.jwt_refresh_secret as string,
+    // ) as JwtPayload;
 
     // Verify Token and retrieve data from it
     let decoded;
@@ -36,16 +38,16 @@ const authCheck = (...requiredRole: TUserRole[]) => {
       throw new AppError(httpStatus.NOT_FOUND, 'This user is not found!');
     }
 
-    const currentTime = Math.floor(Date.now() / 1000);
+    // const currentTime = Math.floor(Date.now() / 1000);
 
-    if (
-      !refreshTokenDecoded?.exp ||
-      currentTime > refreshTokenDecoded.exp ||
-      !decoded?.exp ||
-      currentTime > decoded.exp
-    ) {
-      throw new AppError(httpStatus.UNAUTHORIZED, 'Token session expired!');
-    }
+    // if (
+    //   !refreshTokenDecoded?.exp ||
+    //   currentTime > refreshTokenDecoded.exp ||
+    //   !decoded?.exp ||
+    //   currentTime > decoded.exp
+    // ) {
+    //   throw new AppError(httpStatus.UNAUTHORIZED, 'Token session expired!');
+    // }
 
     if (requiredRole && !requiredRole.includes(decoded.role)) {
       throw new AppError(httpStatus.UNAUTHORIZED, 'User not authorized!');

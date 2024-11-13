@@ -4,6 +4,7 @@ import { PostService } from './post.service';
 
 const createPost = catchAsync(async (req, res) => {
   const payload = req.body;
+
   if (req.files && req.files?.length === 0) {
     throw new Error('Post image not provided!');
   }
@@ -17,7 +18,11 @@ const createPost = catchAsync(async (req, res) => {
 });
 
 const getAllPost = catchAsync(async (req, res) => {
-  const result = await PostService.getAllPost();
+  const limit = parseInt(req.query.limit as string) || 5;
+  const skip = parseInt(req.query.skip as string) || 0;
+  const search = (req.query.search as string) || '';
+
+  const result = await PostService.getAllPost(limit, skip, search);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -53,14 +58,16 @@ const updatePost = catchAsync(async (req, res) => {
 
 const commentOnPost = catchAsync(async (req, res) => {
   const payload = req.body;
+  console.log({ payload });
   const { comment, userId } = payload;
   const { id: postId } = req.params;
   const result = await PostService.commentOnPost(postId, userId, comment);
+  const { result: comments, allComments } = result;
   sendResponse(res, {
     statusCode: 200,
     success: true,
     message: 'Comment attached successfully!',
-    data: result,
+    data: { comments, allComments },
   });
 });
 
@@ -88,6 +95,39 @@ const deleteCommentOnPost = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+const getUserPosts = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await PostService.getUserPosts(id);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'User posts retrieved successfully!',
+    data: result,
+  });
+});
+
+const deletePost = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await PostService.deletePost(id);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Post deleted successfully!',
+    data: result,
+  });
+});
+
+const getSinglePost = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await PostService.getSinglePost(id);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Single post retrieved successfully!',
+    data: result,
+  });
+});
 export const PostController = {
   createPost,
   getAllPost,
@@ -96,4 +136,7 @@ export const PostController = {
   commentOnPost,
   updateCommentOnPost,
   deleteCommentOnPost,
+  getUserPosts,
+  deletePost,
+  getSinglePost,
 };

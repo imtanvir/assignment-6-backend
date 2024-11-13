@@ -22,7 +22,7 @@ const superUser = {
 
 const superAdmin = async () => {
   const isSuperAdminExits = await UserModel.findOne({
-    role: USER_ROLE.superAdmin,
+    role: USER_ROLE.admin,
   });
 
   if (!isSuperAdminExits) {

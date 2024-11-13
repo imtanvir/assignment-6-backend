@@ -10,9 +10,8 @@ export const postCheck = z.object({
       message: 'Invalid id ObjectId',
     }),
     premium: z.boolean().optional().default(false),
-    category: z.enum(['Tip', 'Story']).optional().default('Story'),
-    title: z.string().min(1, 'Title is required'),
-    content: z.string().min(1, 'Content is required'),
+    category: z.enum(['tip', 'story']).optional().default('story'),
+    post: z.string().min(1, 'Post content is required').trim(),
     comments: z
       .array(
         z.object({

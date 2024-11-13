@@ -33,8 +33,8 @@ const postSchema = new Schema<TPost>(
     },
     category: {
       type: String,
-      enum: ['Tip', 'Story'],
-      default: 'Story',
+      enum: ['tip', 'story'],
+      default: 'story',
     },
     upvote: {
       type: Number,
@@ -44,11 +44,7 @@ const postSchema = new Schema<TPost>(
       type: Number,
       default: 0,
     },
-    title: {
-      type: String,
-      required: true,
-    },
-    content: {
+    post: {
       type: String,
       required: true,
     },
@@ -91,5 +87,6 @@ const postSchema = new Schema<TPost>(
     timestamps: true,
   },
 );
+postSchema.index({ post: 'text' });
 
 export const PostModel = model<TPost>('post', postSchema);

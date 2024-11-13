@@ -15,9 +15,9 @@ const PaymentHistoryCreate = catchAsync(async (req, res) => {
   });
 });
 
-const advancePayment = catchAsync(async (req, res) => {
+const makePayment = catchAsync(async (req, res) => {
   const { amount } = req.body;
-  const result = await PaymentService.advancePayment(amount);
+  const result = await PaymentService.makePayment(amount);
 
   sendResponse(res, {
     success: true,
@@ -60,7 +60,7 @@ const getUserPaymentHistory = catchAsync(async (req, res) => {
 });
 export const PaymentController = {
   PaymentHistoryCreate,
-  advancePayment,
+  makePayment,
   getPaymentHistory,
   deletePaymentHistory,
   getUserPaymentHistory,

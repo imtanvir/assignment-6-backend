@@ -8,7 +8,7 @@ const createPaymentHistory = async (payload: TPayment) => {
   return result;
 };
 
-const advancePayment = async (amount: number) => {
+const makePayment = async (amount: number) => {
   const amountConvert = amount * 100;
 
   const paymentIntent = await stripe.paymentIntents.create({
@@ -50,7 +50,7 @@ const getUserPaymentHistory = async (_id: string) => {
 export const PaymentService = {
   deletePaymentHistory,
   createPaymentHistory,
-  advancePayment,
+  makePayment,
   getPaymentHistory,
   getUserPaymentHistory,
 };

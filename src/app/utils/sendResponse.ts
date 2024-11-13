@@ -6,7 +6,8 @@ const sendResponse = <T>(res: Response, responseData: TResponse<T>) => {
     success: responseData.success,
     statusCode: responseData.statusCode,
     message: responseData.message,
-    token: responseData.token,
+    accessToken: responseData.accessToken,
+    refreshToken: responseData.refreshToken,
     data: responseData.data,
   });
 };

@@ -1,7 +1,8 @@
 export interface TResponse<T> {
   statusCode: number;
   success: boolean;
-  token?: string;
+  accessToken?: string;
+  refreshToken?: string;
   message: string;
   data: T;
 }
